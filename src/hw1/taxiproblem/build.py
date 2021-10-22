@@ -23,11 +23,11 @@ print('Desired location for customer is...{}'.format(demand))
 
 # Construct state space.
 # Assume the following layout.
-#  1    2 | 3    4    5
-#  6    7 | 8    9   10
-# 11   12  13   14   15
-# 16 | 17  18 | 19   20
-# 21 | 22  23 | 24   25
+#  0    1 | 2    3    4
+#  5    6 | 7    8    9
+# 10   11  12   13   14
+# 15 | 16  17 | 18   19
+# 20 | 21  22 | 23   24
 S_ta = to.as_tensor(list(itertools.product(to.arange(25), to.arange(5), to.arange(4))))
 S_ta = to.vstack((S_ta, to.as_tensor([25, 5, 5])))
 card_s = S_ta.shape[0]
@@ -72,8 +72,6 @@ locations = {
 barriers = {
     1: 1,
     2: 0,
-    6: 1,
-    7: 0,
     15: 1,
     20: 1,
     16: 0,
@@ -218,11 +216,12 @@ for i in tqdm(range(card_s), desc='building transition matrices'):
                 # as long as i and j != 400 (i.e. terminal state)
                 # and second element != 4
                 # only action is do nothing.
-                if a == 6:
+                """if a == 6:
                     if S_t[j][1].item() < 4:
                         P[a][i, j] = 1 / len(locations.keys()) * 1 / (len(locations.keys()) - 1) * 1 / 25
                     if j != 400:
-                        P[a][j, j] = 1
+                        P[a][j, j] = 1"""
+
 
 # Update that all actions except for the last have absorbing terminal states.
 for a in A:
@@ -230,6 +229,7 @@ for a in A:
     if a != 6:
         P[a][400, 400] = 1
 
+P[6] = to.eye(card_s)
 # Logic Checks.
 for a in A:
     a = a.item()

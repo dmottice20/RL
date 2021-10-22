@@ -1,5 +1,6 @@
 import torch as to
 import numpy as np
+from scipy.sparse import eye
 import tqdm
 
 # Based off of Sutto and Barto (2018), Example 6.6 (pg 132)
@@ -20,7 +21,7 @@ A = to.arange(4, dtype=to.int)
 card_a = len(A)
 
 # Discount factor.
-gamma = 1 - 1e3*np.spacing(1)
+gamma = 1 - 1e10*np.spacing(1)
 
 # Probability of slipping.
 p_slip = 0.35
@@ -124,7 +125,7 @@ Q = to.zeros(card_s, card_a)
 
 
 def policy_evaluation(Pd, rd):
-    return to.solve(rd, to.eye(card_s) - Pd)
+    return to.linalg.solve((to.from_numpy(eye(card_s).toarray()) - Pd).float(), rd)
 
 
 while not to.equal(d, dtm1.long()):
@@ -142,13 +143,16 @@ while not to.equal(d, dtm1.long()):
     # Policy Improvement.
     for a in A:
         a = a.item()
-        Q[:, a] = R[:, a] + to.matmul(gamP[a], v)
+        Q[:, a] = R[:, a] + to.matmul(gamP[a], v).reshape(card_s)
     d = to.argmax(Q, 1)
-    d = to.reshape(d, (39, 1))
+    d = to.reshape(d, (card_s, 1))
 
     n += 1
 
-Vstar_a = to.reshape(v[:36], (12, 3))
-Vstar_b = to.hstack((v[37].item(), to.zeros(1, 11)))
-Vstar = to.vstack((Vstar_a, Vstar_b))
+Vstar_a = to.reshape(v[:36], (3, 12))
+Vstar_b = to.hstack((v[37], to.zeros(11)))
+Vstar = to.vstack((Vstar_a, Vstar_b.reshape(1, 12)))
 print(Vstar)
+
+# Save the vstar...
+to.save(Vstar, 'Vstar_SCW.pt')
