@@ -2,6 +2,7 @@ import torch as to
 import numpy as np
 from scipy.sparse import eye
 import tqdm
+import random
 
 gamma = 1
 
@@ -10,7 +11,6 @@ gamma = 1
 def approximate_bellman_equation(st, V, gamma, num_samples):
     VHAT = to.zeros(num_samples, 4)
     STP1 = to.zeros(num_samples, 4)
-    solution = {}
     for a in range(4):
         for i in range(num_samples):
             # obtain next state given current state, action & sampled outcome.
@@ -18,14 +18,11 @@ def approximate_bellman_equation(st, V, gamma, num_samples):
             # Compute the value...
             VHAT[i, a] = contribution_function(st, a, int(STP1[i, a].item())) + gamma * V[0, int(STP1[i, a].item())]
 
-    vhat = to.max(to.mean(VHAT, 1)).item()
-    astar = to.argmax(to.mean(VHAT, 1)).item()
+    vhat = to.max(to.mean(VHAT, 0)).item()
+    astar = to.argmax(to.mean(VHAT, 0)).item()
     sample = to.randint(num_samples, size=(1,)).item()
-    solution['vhat'] = vhat
-    solution['stp1'] = STP1[sample, astar].item()
-    solution['reward'] = contribution_function(st, astar, solution['stp1'])
 
-    return solution
+    return vhat, int(STP1[sample, astar].item()), contribution_function(st, astar, int(STP1[sample, astar].item()))
 
 
 def system_model(s, a):
@@ -66,7 +63,7 @@ def system_model(s, a):
             raise Exception('Transition Function Error!')
 
     # Apply possible, slippery slope where agent could move south.
-    if to.rand(1).item() < 0.35:
+    if random.random() < 0.35:
         pds = stp1
         if pds == 37 or pds == 38:
             stp1 = pds
@@ -91,3 +88,7 @@ def contribution_function(st, a, stp1):
         c_n = 0
 
     return c_n
+
+
+def exploit_action(state, q_table):
+    return to.argmax(q_table[state, :]).item()
