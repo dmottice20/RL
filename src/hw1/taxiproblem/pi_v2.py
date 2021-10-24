@@ -98,4 +98,4 @@ e = np.ones((B.shape[0], 1))
 m = np.matmul(np.linalg.inv(np.identity(B.shape[0]) - B), e)
 print('Expected actions to terminal...{}'.format(np.mean(m[starting_states])))
 
-
+to.save(V, 'v_star_taxi.pt')
