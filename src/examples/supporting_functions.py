@@ -24,6 +24,11 @@ def approximate_bellman_equation(st, V, gamma, num_samples):
 
     return vhat, int(STP1[sample, astar].item()), contribution_function(st, astar, int(STP1[sample, astar].item()))
 
+    return {
+        'value estimate': to.max(to.mean(VHAT, 0)).item(),
+        ''
+    }
+
 
 def system_model(s, a):
     if s == 38:
