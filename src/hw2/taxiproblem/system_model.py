@@ -62,9 +62,9 @@ def system_model(state_idx, action, indices):
             possible = False
         elif action == 1 and state[0].item() in [4, 9, 14, 19, 24]:
             possible = False
-        elif action == 2 and state[0].item() < 4:
+        elif action == 2 and state[0].item() < 5:
             possible = False
-        elif action == 3 and state[0].item() > 20:
+        elif action == 3 and state[0].item() > 19:
             possible = False
 
         # Is a barrier restricting this action?
