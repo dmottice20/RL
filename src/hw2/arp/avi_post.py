@@ -99,7 +99,7 @@ def alpha(m): return 0.4
 def epsilon(m): return 0.1
 
 
-gamma, num_reps, num_episodes, num_steps = 0.9, 10, 1000, 1000
+gamma, num_reps, num_episodes, num_steps = 0.9, 10, 1000, 250
 random.seed(1)
 
 # Initialize storage tensors.

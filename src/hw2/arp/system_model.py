@@ -68,10 +68,10 @@ def contribution_fx(state, action, op_cost, value, cost):
 
 
 def approximate_bellman_equation(state_t, value, gamma, num_samples, prob, op_cost, val, cost):
-    v_hat = to.zeros(size=(num_samples, 4))
-    states = to.zeros(size=(num_samples, 4), dtype=to.int)
-    for a in np.arange(4):
-        for i in np.arange(num_samples):
+    v_hat = to.zeros(size=(num_samples, 3651))
+    states = to.zeros(size=(num_samples, 3651), dtype=to.int)
+    for a in range(3651):
+        for i in range(num_samples):
             # Obtain next state given current state, action & sampled outcome.
             states[i, a] = system_model(state_t, a, prob)
             # Compute the value of that sampled state, action, outcome tuple.
@@ -85,4 +85,4 @@ def approximate_bellman_equation(state_t, value, gamma, num_samples, prob, op_co
         'value estimate': v_hat_t,
         'next state': states[sample, a_star].item(),
         'reward': contribution_fx(state_t, a_star, op_cost, val, cost)
-    }
+    }, a_star

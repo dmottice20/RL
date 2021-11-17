@@ -15,10 +15,10 @@ else:
 
 P = P.numpy()
 R = R.numpy()
-R = R.reshape((7, 401))
+R = R.reshape((6, 401))
 R = R.transpose()
 
-for a in range(7):
+for a in range(6):
     i = 0
     for row in P[a]:
         if sum(row) != 1:

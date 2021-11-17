@@ -1,4 +1,5 @@
 import torch as to
+import numpy as np
 import itertools
 from tqdm import tqdm
 
@@ -54,8 +55,7 @@ card_a = A.shape[0]
 #       2 is U, i.e. k_t - 5,
 #       3 is D, i.e. k_t + 5,
 #       4 is picking up,
-#       5 is dropping off,
-#       6 is do nothing.
+#       5 is dropping off.
 
 # Create a set of locations where 0,1,2,3
 # correspond to R, G, Y, and B respectively.
@@ -229,16 +229,21 @@ for a in A:
     if a != 6:
         P[a][400, 400] = 1
 
-P[6] = to.eye(card_s)
+# P[6] = to.eye(card_s)
+# Instead, delete the last element of the P-matrix, where action 6 should be.
+P_num = P.numpy()
+P_final = np.delete(P_num, 6, 0)
+P = to.tensor(P_final)
 # Logic Checks.
-for a in A:
-    a = a.item()
+for a in range(6):
     i = 0
     for row in P[a]:
         if sum(row) != 1:
             print('row {} of action {} does not sum to 1.'.format(i, a))
 
         i += 1
+
+print('THE FINAL SHAPE IS: ', P.shape)
 
 # Save the tensors...
 to.save(P, 'data/transition_matrices.pt')

@@ -25,6 +25,7 @@ for i in range(501):
     if state_space[i][2].item() < 4 and state_space[i][2].item() != state_space[i][3].item():
         starting_states.append(i)
 
+
 # Initialize algorithm params and variables.
 def alpha(m): return 0.8
 def epislon(m): return 0.25
@@ -61,4 +62,3 @@ for rep in range(num_reps):
                 action_t = random.choice(actions)
 
         state_t_plus_1 = system_model(state_t, action_t, indices)
-

@@ -28,7 +28,7 @@ S_t[-1] = to.tensor([25, 5, 5])
 card_s = S_t.shape[0]
 
 # Construct the action space.
-A = to.arange(7, dtype=to.int8)
+A = to.arange(6, dtype=to.int8)
 card_a = A.shape[0]
 # where 0 is L, i.e. k_t - 1,
 #       1 is R, i.e. k_t + 1,
@@ -103,6 +103,7 @@ for i in tqdm(range(card_s), desc='building reward vectors'):
         else:
             r[a][i] = 0
 
+print('FINAL SHAPE IS: ', r.shape)
 
 to.save(r, 'data/reward_vectors.pt')
 print('EL FIN!')
